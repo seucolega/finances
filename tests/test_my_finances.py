@@ -10,6 +10,7 @@ from my_finances import (
     int_to_str,
     invoice_start_date,
     next_invoice_to_close,
+    percentage_to_str,
     total_debt,
 )
 
@@ -185,5 +186,21 @@ def test_invoice_start_date(invoice_closing_today):
     )
 
 
-# print_info
-# print_invoice
+def test_percentage_to_str__with_1():
+    assert percentage_to_str(1) == '1.00 %'
+
+
+def test_percentage_to_str__with_1_point_2():
+    assert percentage_to_str(1.2) == '1.20 %'
+
+
+def test_percentage_to_str__with_1_point_23():
+    assert percentage_to_str(1.23) == '1.23 %'
+
+
+def test_percentage_to_str__with_1_point_234():
+    assert percentage_to_str(1.234) == '1.23 %'
+
+
+def test_percentage_to_str__with_1_point_235():
+    assert percentage_to_str(1.235) == '1.24 %'
