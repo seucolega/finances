@@ -109,11 +109,12 @@ def invoice_to_print(invoice: Invoice, reference_date: datetime.date) -> str:
 
     start_date = invoice_start_date(invoice.closing_date)
     total_days = (invoice.closing_date - start_date).days
+    elapsed_days = (max(reference_date, start_date) - start_date).days
     days_remaining = (
         invoice.closing_date - max(reference_date, start_date)
     ).days
     percentage_used = invoice.value / budgeted_amount_per_month * 100
-    percentage_of_days_elapsed = days_remaining / total_days * 100
+    percentage_of_days_elapsed = elapsed_days / total_days * 100
     usage_status = (
         'Good' if percentage_used < percentage_of_days_elapsed else 'Not good'
     )
@@ -152,9 +153,16 @@ def invoice_to_print(invoice: Invoice, reference_date: datetime.date) -> str:
     if reference_date >= start_date:
         result.append(
             invoice_info(
+                indentation + 'Days from the start of the invoice',
+                elapsed_days,
+                percentage_to_str(percentage_of_days_elapsed),
+            )
+        )
+        result.append(
+            invoice_info(
                 indentation + 'Remaining days until closing',
                 days_remaining,
-                percentage_to_str(percentage_of_days_elapsed),
+                percentage_to_str(days_remaining / total_days * 100),
             )
         )
 
