@@ -1,6 +1,6 @@
 .PHONY:	install format lint test sec
 ISORT_ARGS=--trailing-comma --multi-line 3
-PYTHONPATH=./my_finances
+PYTHONPATH=./finances
 
 install:
 	@poetry install

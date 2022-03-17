@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 from dateutil.relativedelta import relativedelta
 
-from my_finances import (
+from finances import (
     date_is_within_the_invoice_period,
     float_to_currency_str,
     future_items_in_invoice,

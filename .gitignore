@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Data file
-my_finances/data.py
+finances/data.py
