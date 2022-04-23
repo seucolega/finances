@@ -112,7 +112,7 @@ def invoice_to_print(invoice: Invoice, reference_date: datetime.date) -> str:
     elapsed_days = (max(reference_date, start_date) - start_date).days
     days_remaining = (
         invoice.closing_date - max(reference_date, start_date)
-    ).days
+    ).days - 1
     percentage_used = invoice.value / budgeted_amount_per_month * 100
     percentage_of_days_elapsed = elapsed_days / total_days * 100
     usage_status = (
@@ -158,13 +158,14 @@ def invoice_to_print(invoice: Invoice, reference_date: datetime.date) -> str:
                 percentage_to_str(percentage_of_days_elapsed),
             )
         )
-        result.append(
-            invoice_info(
-                indentation + 'Remaining days until closing',
-                days_remaining,
-                percentage_to_str(days_remaining / total_days * 100),
+        if days_remaining:
+            result.append(
+                invoice_info(
+                    indentation + 'Remaining days until closing',
+                    days_remaining,
+                    percentage_to_str(days_remaining / total_days * 100),
+                )
             )
-        )
 
     available_value = budgeted_amount_per_month - invoice.value
 
@@ -178,7 +179,7 @@ def invoice_to_print(invoice: Invoice, reference_date: datetime.date) -> str:
         )
     )
 
-    if available_value > 0:
+    if days_remaining and available_value > 0:
         value_available_per_day = available_value / days_remaining
         percentage_available_per_day = (
             value_available_per_day / budgeted_amount_per_month * 100
@@ -218,6 +219,24 @@ def init():
     )
 
     if next_invoice:
+        reference_date = invoice_start_date(
+            next_invoice.closing_date
+        ) - relativedelta(days=1)
+        prev_invoice = next_invoice_to_close(
+            invoice_list=credit_card,
+            reference_date=reference_date,
+        )
+
+        if prev_invoice:
+            print()
+            print(
+                invoice_to_print(
+                    invoice=prev_invoice,
+                    reference_date=prev_invoice.closing_date
+                    - relativedelta(days=1),
+                )
+            )
+
         print()
         print(invoice_to_print(invoice=next_invoice, reference_date=today))
 
